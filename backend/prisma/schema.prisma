@@ -1,5 +1,5 @@
 generator client {
-  provider     = "prisma-client"
+  provider     = "prisma-client-js"
   output       = "../generated/prisma"
   moduleFormat = "cjs"
 }
@@ -9,11 +9,11 @@ datasource db {
 }
 
 model User {
+  userId       String    @id
   userName     String    @map("user_name")
   userEmail    String    @unique @map("user_email")
   userPhone    String    @map("user_phone")
   createdAt    DateTime  @default(now()) @map("created_at")
-  userId       String    @id
   userPassword String    @unique @map("user_password")
   addresses    Address[]
   orders       Order[]

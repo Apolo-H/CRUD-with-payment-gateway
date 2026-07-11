@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateLoginDto } from './dto/create-login.dto';
-import { UpdateLoginDto } from './dto/update-login.dto';
+import { CreateLoginDto } from './dto/create-auth.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -53,7 +52,7 @@ export class LoginService {
     });
 
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -61,40 +60,30 @@ export class LoginService {
       user.userPassword,
     );
 
-    const payload = { userId: user.userId, email: user.userEmail };
-
     if (!isPasswordValid) {
-      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
-    const Accesstoken = this.jwtService.sign(payload, {
+    const payload = {
+      sub: user.userId,
+      email: user.userEmail,
+      telephone: user.userPhone,
+      name: user.userName,
+    };
+
+    const accessToken = this.jwtService.sign(payload, {
       expiresIn: '1h',
     });
 
     return {
-      token: Accesstoken,
+      token: accessToken,
       user: {
         id: user.userId,
         email: user.userEmail,
         name: user.userName,
-        phone: user.userPhone,
+        telephone: user.userPhone,
       },
     };
   }
 
-  findAll() {
-    return `This action returns all login`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} login`;
-  }
-
-  update(id: number, updateLoginDto: UpdateLoginDto) {
-    return `This action updates a #${id} login`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} login`;
-  }
 }

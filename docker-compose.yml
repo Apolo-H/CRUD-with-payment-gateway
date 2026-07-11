@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:15-alpine 
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: delivery
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - '5432:5432' 
+    volumes:
+      - postgres_delivery_final:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres_delivery_final:

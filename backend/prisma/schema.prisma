@@ -1,0 +1,80 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  userName     String    @map("user_name")
+  userEmail    String    @unique @map("user_email")
+  userPhone    String    @map("user_phone")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  userId       String    @id
+  userPassword String    @unique @map("user_password")
+  addresses    Address[]
+  orders       Order[]
+
+  @@map("user")
+}
+
+model Address {
+  addressId           Int    @id @default(autoincrement()) @map("address_id")
+  userId              String @map("user_id")
+  addressCep          String @map("address_cep")
+  addressNumber       String @map("address_number")
+  addressStreet       String @map("address_street")
+  addressNeighborhood String @map("address_neighborhood")
+  addressPropertyType String @map("address_property_type")
+  user                User   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("address")
+}
+
+model Order {
+  ordersId              Int         @id @default(autoincrement()) @map("orders_id")
+  userId                String      @map("user_id")
+  ordersTax             Float       @map("orders_tax")
+  ordersPayMethod       String      @map("orders_pay_method")
+  ordersStatus          OrderStatus @default(Pendente) @map("orders_status")
+  ordersUsername        String      @map("orders_username")
+  ordersUserPhone       String      @map("orders_user_phone")
+  ordersDeliveryAddress String      @map("orders_delivery_address")
+  ordersCreatedAt       DateTime    @default(now()) @map("orders_created_at")
+  ordersStripeSessionId String?     @unique @map("orders_stripe_session_id")
+  ordersObservation     String?     @map("orders_observation")
+  items                 OrderItem[]
+  user                  User        @relation(fields: [userId], references: [userId])
+
+  @@map("orders")
+}
+
+model OrderItem {
+  orderItemId          Int                   @id @default(autoincrement()) @map("order_item_id")
+  ordersId             Int                   @map("orders_id")
+  sanityProductId      String                @map("sanity_product_id")
+  quantity             Int                   @map("quantity")
+  priceAtPurchase      Float                 @map("price_at_purchase")
+  orderItemComplements OrderItemComplement[]
+  order                Order                 @relation(fields: [ordersId], references: [ordersId], onDelete: Cascade)
+
+  @@map("order_items")
+}
+
+model OrderItemComplement {
+  orderItemComplementId Int       @id @default(autoincrement()) @map("order_item_complement_id")
+  orderItemId           Int       @map("order_item_id")
+  sanityComplementId    String    @map("sanity_complement_id")
+  orderItem             OrderItem @relation(fields: [orderItemId], references: [orderItemId], onDelete: Cascade)
+
+  @@map("order_item_complements")
+}
+
+enum OrderStatus {
+  Pendente
+  Cancelado
+  Concluido
+}

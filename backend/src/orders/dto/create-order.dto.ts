@@ -5,12 +5,13 @@ export class CreateOrderItemComplementDto {
 export class CreateOrderItemDto {
   sanityProductId!: string;
   quantity!: number;
-  priceAtPurchase!: number; // ⚠️ Temporário até termos o Sanity integrado!
+  priceAtPurchase!: number;
   complements?: CreateOrderItemComplementDto[];
 }
 
 export class CreateOrderDto {
-  addressId!: number; // Envia o ID para o back-end buscar o endereço real
+  userId!: string
+  addressId!: number; 
   ordersPayMethod!: string;
   ordersObservation?: string;
   items!: CreateOrderItemDto[];

@@ -1,4 +1,4 @@
-import { PrismaClient, OrderStatus } from '../generated/prisma/client'; // ajuste o caminho se necessário
+import { PrismaClient, OrderStatus } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import "dotenv/config";
 import { Pool } from "pg";
@@ -19,24 +19,21 @@ async function main() {
   await prisma.address.deleteMany();
   await prisma.user.deleteMany();
 
-  // 2. Criar Senha Criptografada para o usuário de teste
-  const hashedPassword = await bcrypt.hash('12345678', 10);
+  const hashedPassword = await bcrypt.hash('123', 10);
 
-  // 3. Criar o Usuário (Usando um UUID mockado para o userId)
   const userIdMock = '01909e73-b36b-7ac3-8000-000000000001';
   
   const user = await prisma.user.create({
     data: {
       userId: userIdMock,
-      userName: 'Carlos Silva (Cliente de Teste)',
-      userEmail: 'carlos@teste.com',
-      userPhone: '11999998888',
+      userName: 'Angelo',
+      userEmail: 'angelo@teste.com',
+      userPhone: '12982288501',
       userPassword: hashedPassword,
     },
   });
   console.log(`👤 Usuário criado: ${user.userEmail}`);
 
-  // 4. Criar Endereços para este usuário
   const address1 = await prisma.address.create({
     data: {
       userId: user.userId,
@@ -60,25 +57,23 @@ async function main() {
   });
   console.log('📍 2 Endereços criados com sucesso!');
 
-  // 5. Criar um Pedido completo (com itens e complementos do Sanity)
-  // Simulando que o cliente escolheu o endereço 1 para a entrega
   const deliveryAddressStr = `${address1.addressStreet}, Nº ${address1.addressNumber} - ${address1.addressNeighborhood}, CEP: ${address1.addressCep} (${address1.addressPropertyType})`;
 
   const order = await prisma.order.create({
     data: {
       userId: user.userId,
-      ordersTax: 7.50, // Taxa de entrega
+      ordersTax: 7.50,
       ordersPayMethod: 'Pix',
       ordersStatus: OrderStatus.Pendente,
       ordersUsername: user.userName,
       ordersUserPhone: user.userPhone,
       ordersDeliveryAddress: deliveryAddressStr,
       ordersObservation: 'Retirar a cebola do hambúrguer, por favor.',
-      // Criando os itens e sub-itens na mesma transação!
+
       items: {
         create: [
           {
-            sanityProductId: 'sanity_prod_monster_burger_123', // ID que viria do Sanity
+            sanityProductId: 'sanity_prod_monster_burger_123', 
             quantity: 1,
             priceAtPurchase: 38.90,
             orderItemComplements: {
@@ -92,7 +87,7 @@ async function main() {
             sanityProductId: 'sanity_prod_batata_frita_456',
             quantity: 1,
             priceAtPurchase: 14.00
-            // Sem complementos neste item
+
           }
         ]
       }

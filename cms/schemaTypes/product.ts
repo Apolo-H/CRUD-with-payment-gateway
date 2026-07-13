@@ -1,4 +1,4 @@
-import { defineType, defineField } from 'sanity';
+import {defineType, defineField} from 'sanity'
 
 export const product = defineType({
   name: 'product',
@@ -26,14 +26,25 @@ export const product = defineType({
       name: 'image',
       title: 'Foto do Produto',
       type: 'image',
-      options: { hotspot: true }, 
+      options: {hotspot: true},
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'complements',
       title: 'Adicionais Disponíveis',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'complement' }] }],
+      of: [{type: 'reference', to: [{type: 'complement'}]}],
+    }),
+    // Adicione este bloco dentro do array de fields no seu arquivo do schema:
+    defineField({
+      name: 'slug',
+      title: 'URL Amigável (Slug)',
+      type: 'slug',
+      options: {
+        source: 'name', // Gera o slug automaticamente baseado no Nome do Produto
+        maxLength: 96,
+      },
+      validation: (Rule) => Rule.required(),
     }),
   ],
-});
+})

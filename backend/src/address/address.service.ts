@@ -9,7 +9,7 @@ export class AddressService {
   async create(userId: string, createAddressDto: CreateAddressDto) {
     return this.prisma.address.create({
       data: {
-        userId,
+        userId: userId,
         addressStreet: createAddressDto.addressStreet,
         addressNumber: createAddressDto.addressNumber,
         addressNeighborhood: createAddressDto.addressNeighborhood,

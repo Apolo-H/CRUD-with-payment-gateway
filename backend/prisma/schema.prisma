@@ -12,7 +12,7 @@ model User {
   userEmail    String    @unique @map("user_email")
   userPhone    String    @map("user_phone")
   createdAt    DateTime  @default(now()) @map("created_at")
-  userPassword String    @unique @map("user_password")
+  userPassword String    @map("user_password")
   addresses    Address[]
   orders       Order[]
 

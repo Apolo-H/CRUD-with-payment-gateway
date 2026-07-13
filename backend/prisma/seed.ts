@@ -12,14 +12,14 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log('🌱 Iniciando a criação de dados falsos...');
 
-  // 1. Limpar o banco antes de inserir (evita duplicar e-mails ao rodar de novo)
+
   await prisma.orderItemComplement.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.address.deleteMany();
   await prisma.user.deleteMany();
 
-  const hashedPassword = await bcrypt.hash('123', 10);
+  const hashedPassword = await bcrypt.hash('123456', 10);
 
   const userIdMock = '01909e73-b36b-7ac3-8000-000000000001';
   

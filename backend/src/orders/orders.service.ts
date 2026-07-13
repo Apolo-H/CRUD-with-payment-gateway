@@ -8,11 +8,10 @@ import { SanityService } from 'src/sanity/sanity.service';
 export class OrdersService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly sanityService: SanityService, 
+    private readonly sanityService: SanityService,
   ) {}
 
   async create(userId: string, createOrderDto: CreateOrderDto) {
-
     const user = await this.prisma.user.findUnique({ where: { userId } });
     if (!user) throw new NotFoundException('User not found');
 
@@ -32,7 +31,6 @@ export class OrdersService {
     const itemsToCreate: any[] = [];
 
     for (const item of createOrderDto.items) {
-
       const sanityProduct = await this.sanityService.getProductWithComplements(
         item.sanityProductId,
       );
@@ -67,7 +65,7 @@ export class OrdersService {
       itemsToCreate.push({
         sanityProductId: item.sanityProductId,
         quantity: item.quantity,
-        priceAtPurchase: finalPrice, 
+        priceAtPurchase: finalPrice,
         orderItemComplements: {
           create: complementsData,
         },

@@ -7,7 +7,7 @@ export class SanityService {
 
   constructor() {
     this.client = createClient({
-      projectId: process.env.SANITY_PROJECTID,
+      projectId: process.env.SANITY_PROJECT_ID,
       dataset: process.env.SANITY_DATASET, 
       useCdn: false, 
       apiVersion: '2026-07-11', 
